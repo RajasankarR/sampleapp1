@@ -1,17 +1,18 @@
-from flask import Flask, jsonify,request
+from flask import Flask,jsonify,request
 app = Flask(__name__)
 
-@app.route('/mix2/p2/v1.0/api',methods=['GET', 'POST'])
-def process():
-    run_id1 = request.json['mixid']
+@app.route('/')
+def hello2():
+   print('a')
+   return "helo test"
 
-    # plant:Plant of the user who is trigerring the process in the application
-    plant = request.json['plant']
-    status='{} is {}'.format(run_id1,plant)
+@app.route('/myroute')
+def hello():
+    print('b')
+    data=request.get_json(force=True)
+    print(data)
+    run_id = request.get_json()['mixid']
+    plant = request.get_json()['plant']
+    status='{} is {}'.format(run_id,plant)
     return jsonify(
         {'status':status})
-
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0")
-    app.debug = True
