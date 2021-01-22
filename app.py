@@ -41,8 +41,17 @@ def fn_forecast():
         print(model_path)
         model = joblib.load(model_path)
         print('b')
-        future = model.make_future_dataframe(periods=5, freq='MS')
+        future = list()
+        future = pd.DataFrame(pd.date_range('2015-10-01', periods=5, freq='MS'))
+        print(future)
+        future.columns = ['ds']
+        future['ds'] = pd.to_datetime(future['ds'])
+
         forecast = model.predict(future)
     except Exception as e:
         print(e)
     return forecast[['ds', 'yhat']].iloc[-1].to_dict()
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0")
+    app.debug = True
