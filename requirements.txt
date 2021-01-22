@@ -3,5 +3,5 @@ Jinja2==2.7.2
 MarkupSafe==0.23
 Werkzeug==0.9.4
 itsdangerous==0.24
-azureml=0.2.7
-joblib=1.0.0
+azureml==0.2.7
+joblib==1.0.0
