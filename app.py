@@ -13,7 +13,7 @@ def hello2():
    return "hello test"
 
 @app.route('/myroute')
-def hello():
+def hello3():
     print('b')
     data=request.get_json(force=True)
     print(data)
