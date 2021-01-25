@@ -74,6 +74,7 @@ def fn_clean():
             'DRIVER=' + driver + ';SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
         # cursor = cnxn.cursor()
         # select 26 rows from SQL table to insert in dataframe.
+        print('2')
         with cnxn.cursor() as cursor:
             pass
             cursor.executemany("""
@@ -84,6 +85,7 @@ def fn_clean():
         status='success'
     except Exception as e:
         status='error'
+        print(e)
     finally:
         return {"status":status}
 
