@@ -56,7 +56,7 @@ def fn_forecast():
 @app.route('/cleandata',methods=['GET','POST'])
 def fn_clean():
     try:
-        print(data)
+        print(request)
 
         data = request.get_json()['data']
         data=(data.replace("\\","")).replace("n","")
