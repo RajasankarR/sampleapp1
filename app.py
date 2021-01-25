@@ -93,7 +93,7 @@ def fn_clean():
         print(str(traceback.format_exc()))
     finally:
         print('final')
-        return {"status":status}
+    return {"status":status}
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
