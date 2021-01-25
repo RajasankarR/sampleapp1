@@ -1,4 +1,5 @@
 from flask import Flask,jsonify,request
+import traceback
 import pandas as pd
 from azureml.core import Run,Model,Workspace
 import joblib
@@ -82,10 +83,11 @@ def fn_clean():
                                 values(?,?)""",
                                [tuple(x) for x in res[['ds', 'yhat']].values])
             cnxn.commit()
+        print('3')
         status='success'
     except Exception as e:
         status='error'
-        print(e)
+        print(str(traceback.format_exc()))
     finally:
         return {"status":status}
 
