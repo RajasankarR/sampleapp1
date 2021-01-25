@@ -61,7 +61,7 @@ def fn_clean():
         print(data)
         res = pd.DataFrame(list(eval(data)))
         drivers = [item for item in pyodbc.drivers()]
-        driver = drivers[5]
+        driver = drivers[-1]
         print("driver:{}".format(driver))
         # Some other example server values are
         server = 'tcp:retailsales-server.database.windows.net'
