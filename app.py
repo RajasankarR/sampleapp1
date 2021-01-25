@@ -2,9 +2,8 @@ from flask import Flask,jsonify,request
 import pandas as pd
 from azureml.core import Run,Model,Workspace
 import joblib
-import fbprophet
 from azureml.core.authentication import ServicePrincipalAuthentication
-
+import pyodbc
 
 app = Flask(__name__)
 
@@ -52,6 +51,41 @@ def fn_forecast():
     except Exception as e:
         print(e)
     return forecast[['ds', 'yhat']].iloc[-1].to_dict()
+
+@app.route('/cleandata')
+def fn_clean():
+    try:
+
+        data = request.get_json()['data']
+        data=(data.replace("\\","")).replace("n","")
+        print(data)
+        res = pd.DataFrame(list(eval(data)))
+        drivers = [item for item in pyodbc.drivers()]
+        driver = drivers[5]
+        print("driver:{}".format(driver))
+        # Some other example server values are
+        server = 'tcp:retailsales-server.database.windows.net'
+        # server = 'myserver,port' # to specify an alternate port
+        # server = 'tcp:myserver.database.windows.net'
+        database = 'retailsales'
+        username = 'retailadmin'
+        password = 'welcome$123'
+        cnxn = pyodbc.connect(
+            'DRIVER=' + driver + ';SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        # cursor = cnxn.cursor()
+        # select 26 rows from SQL table to insert in dataframe.
+        with cnxn.cursor() as cursor:
+            pass
+            cursor.executemany("""
+                                insert into retail_sales_prediction(forecast_timestamp,forecast_value)
+                                values(?,?)""",
+                               [tuple(x) for x in res[['ds', 'yhat']].values])
+            cnxn.commit()
+        status='success'
+    except Exception as e:
+        status='error'
+    finally:
+        return {"status":status}
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
