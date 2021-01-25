@@ -85,8 +85,11 @@ def fn_clean():
             cnxn.commit()
         print('3')
         status='success'
+        print(res)
     except Exception as e:
         status='error'
+        print('in error')
+        print(status)
         print(str(traceback.format_exc()))
     finally:
         return {"status":status}
