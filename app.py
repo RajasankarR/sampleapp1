@@ -92,6 +92,7 @@ def fn_clean():
         print(status)
         print(str(traceback.format_exc()))
     finally:
+        print('final')
         return {"status":status}
 
 if __name__ == '__main__':
