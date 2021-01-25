@@ -6,4 +6,4 @@ itsdangerous==0.24
 azureml-core==1.20.0
 joblib==1.0.0
 pandas==1.2.1
-pyodbc=4.0.30
+pyodbc==4.0.30
