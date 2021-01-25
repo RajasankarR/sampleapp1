@@ -53,7 +53,7 @@ def fn_forecast():
         print(e)
     return forecast[['ds', 'yhat']].iloc[-1].to_dict()
 
-@app.route('/cleandata')
+@app.route('/cleandata',methods=['GET','POST'])
 def fn_clean():
     try:
 
