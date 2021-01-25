@@ -2,6 +2,7 @@ from flask import Flask,jsonify,request
 import pandas as pd
 from azureml.core import Run,Model,Workspace
 import joblib
+import fbprophet
 from azureml.core.authentication import ServicePrincipalAuthentication
 
 
