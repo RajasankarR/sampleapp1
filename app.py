@@ -5,6 +5,7 @@ from azureml.core import Run,Model,Workspace
 import joblib
 from azureml.core.authentication import ServicePrincipalAuthentication
 import pyodbc
+from datetime import date
 
 app = Flask(__name__)
 
@@ -58,6 +59,7 @@ def fn_clean():
     try:
         print(request)
         data = request.get_json()['data']
+        forecast_id = request.get_json()['forecast_id']
         if type(data)==list:
             print('in if')
             print(type(data))
@@ -67,7 +69,9 @@ def fn_clean():
             print('in else')
             data=(data.replace("\\","")).replace("n","")
             res = pd.DataFrame(list(eval(data)))
-        print(data)
+        res['timestamp']=str(date.today())
+        res['forecast_id'] = forecast_id
+        print(res)
 
         drivers = [item for item in pyodbc.drivers()]
         driver = drivers[-1]
@@ -87,9 +91,9 @@ def fn_clean():
         with cnxn.cursor() as cursor:
             pass
             cursor.executemany("""
-                                insert into retail_sales_prediction(forecast_timestamp,forecast_value)
+                                insert into retail_sales_prediction(forecast_timestamp,forecast_value,shop_id,item_id,timestamp,forecast_id)
                                 values(?,?)""",
-                               [tuple(x) for x in res[['ds', 'yhat']].values])
+                               [tuple(x) for x in res[['ds', 'yhat','shop_id','item_id','timestamp','forecast_id']].values])
             cnxn.commit()
         print('3')
         status='success'
