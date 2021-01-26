@@ -57,11 +57,18 @@ def fn_forecast():
 def fn_clean():
     try:
         print(request)
-
         data = request.get_json()['data']
-        data=(data.replace("\\","")).replace("n","")
+        if type(data)==list:
+            print('in if')
+            print(type(data))
+            res = pd.DataFrame(list(data))
+        else:
+            print(type(data))
+            print('in else')
+            data=(data.replace("\\","")).replace("n","")
+            res = pd.DataFrame(list(eval(data)))
         print(data)
-        res = pd.DataFrame(list(eval(data)))
+
         drivers = [item for item in pyodbc.drivers()]
         driver = drivers[-1]
         print("driver:{}".format(driver))
