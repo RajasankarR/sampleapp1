@@ -74,7 +74,7 @@ def fn_clean():
         print(res)
 
         drivers = [item for item in pyodbc.drivers()]
-        driver = drivers[-1]
+        driver = drivers[5]
         print("driver:{}".format(driver))
         # Some other example server values are
         server = 'tcp:retailsales-server.database.windows.net'
@@ -92,7 +92,7 @@ def fn_clean():
             pass
             cursor.executemany("""
                                 insert into retail_sales_prediction(forecast_timestamp,forecast_value,shop_id,item_id,timestamp,forecast_id)
-                                values(?,?)""",
+                                values(?,?,?,?,?,?)""",
                                [tuple(x) for x in res[['ds', 'yhat','shop_id','item_id','timestamp','forecast_id']].values])
             cnxn.commit()
         print('3')
