@@ -106,6 +106,58 @@ def fn_clean():
     finally:
         print('final')
     return jsonify({"status":status})
+@app.route('/abcanalysis')
+def fn_abcanalysis():
+    try:
+
+        drivers = [item for item in pyodbc.drivers()]
+        driver = drivers[-1]
+        print("driver:{}".format(driver))
+        # Some other example server values are
+        server = 'tcp:retailsales-server.database.windows.net'
+        # server = 'myserver,port' # to specify an alternate port
+        # server = 'tcp:myserver.database.windows.net'
+        database = 'retailsales'
+        username = 'retailadmin'
+        password = 'welcome$123'
+        cnxn = pyodbc.connect(
+            'DRIVER=' + driver + ';SERVER=' + server + ';DATABASE=' + database + ';UID=' + username + ';PWD=' + password)
+        data=pd.read_sql('select * from retailsales',cnxn)
+
+        #data=pd.read_csv('sampledata.csv')
+        data['salevalue'] = data.apply(lambda a: a['item_cnt_day'] * a['item_price'], axis=1)
+        agg_data=data.groupby('item_id')['salevalue'].sum()
+        totalsales = data['salevalue'].sum()
+        sales_data_ann_cons = ((agg_data/totalsales)*100).sort_values(ascending=False)
+        sales_cumsum = sales_data_ann_cons.cumsum().reset_index()
+        sales_cumsum['assortment_category']= sales_cumsum.apply(lambda a:'A' if a['salevalue'] <=80 else 'B' if (a['salevalue']>80 and a['salevalue']<=95) else 'C',axis=1)
+
+        with cnxn.cursor() as cursor:
+            pass
+            cursor.execute("""delete from abc_category""")
+            cnxn.commit()
+
+        with cnxn.cursor() as cursor:
+            pass
+            cursor.executemany("""
+                                      insert into abc_category(item_id,salesvalue,assortment_category)
+                                      values(?,?,?)""",
+                               [tuple(x) for x in
+                                sales_cumsum[[ 'item_id', 'salevalue', 'assortment_category']].values])
+            cnxn.commit()
+
+
+        status='success'
+
+    except Exception as e:
+        status='error'
+        print('in error')
+        print(status)
+        print(str(traceback.format_exc()))
+    finally:
+        print('final')
+    return jsonify({"status":status})
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0")
