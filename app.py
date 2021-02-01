@@ -44,7 +44,7 @@ def fn_forecast():
         model = joblib.load(model_path)
         print('b')
         future = list()
-        future = pd.DataFrame(pd.date_range('2015-10-01', periods=5, freq='MS'))
+        future = pd.DataFrame(pd.date_range('2014-01-01', periods=24, freq='MS'))
         print(future)
         future.columns = ['ds']
         future['ds'] = pd.to_datetime(future['ds'])
